@@ -10,6 +10,7 @@ import argparse
 import torch
 import sys
 from g2p.train import g2p
+import os
 
 if __name__ == '__main__':
     ## Info & args
@@ -29,12 +30,13 @@ if __name__ == '__main__':
         "If True, the memory used by the synthesizer will be freed after each use. Adds large "
         "overhead but allows to save some GPU memory for lower-end GPUs.")
     parser.add_argument("--no_sound", action="store_true", help=\
-        "If True, audio won't be played.")
+        "If True, audio won't be played.",
+        default=True)
     parser.add_argument("-t", "--text", 
                         default="Hello my friends. Я многоязычный синтез построенный на tacotron. Шла саша по шоссе и сосала сушку",
                         help="Text") 
     parser.add_argument("-p", "--path_wav", type=Path, 
-                        default="ex.wav",
+                        default="sample_andrei.m4a",
                         help="wav file")                           
     args = parser.parse_args()
     print_args(args, parser)
@@ -125,7 +127,7 @@ if __name__ == '__main__':
     #message = "Reference voice: enter an audio filepath of a voice to be cloned(Введите путь до клонируемого файла, например ex.wav) (mp3, " \
     #          "wav, m4a, flac, ...):\n"
     #in_fpath = Path(input(message).replace("\"", "").replace("\'", ""))
-    in_fpath = args.path_wav
+    in_fpath = os.getcwd() + '/' + args.path_wav.__str__()
     
     ## Computing the embedding
     # First, we load the wav using the function that the speaker encoder provides. This is 
@@ -133,6 +135,8 @@ if __name__ == '__main__':
     
     # The following two methods are equivalent:
     # - Directly load from the filepath:
+    print('file location:  ' + os.getcwd())
+    
     preprocessed_wav = encoder.preprocess_wav(in_fpath)
     # - If the wav is already loaded:
     original_wav, sampling_rate = librosa.load(in_fpath)
@@ -145,7 +149,7 @@ if __name__ == '__main__':
     embed = encoder.embed_utterance(preprocessed_wav)
     print("Created the embedding")
     
-    
+
     ## Generating the spectrogram
     # text = input("Write a sentence (+-20 words) to be synthesized:(Введите предложение для синтеза)\n")
     
@@ -176,7 +180,7 @@ if __name__ == '__main__':
     # Play the audio (non-blocking)
     if not args.no_sound:
         sd.stop()
-        sd.play(generated_wav, synthesizer.sample_rate)
+        sd.play(generated_pretwav, synthesizer.sample_rate)
         
     # Save it on the disk
     fpath = "demo_output_%02d.wav" % num_generated

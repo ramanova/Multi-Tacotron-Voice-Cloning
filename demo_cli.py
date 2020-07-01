@@ -17,8 +17,8 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    parser.add_argument("-e", "--enc_model_fpath", type=Path, 
-                        default="encoder/saved_models/pretrained.pt",
+    parser.add_argument("-e", "--enc_model_fpath", type=Path,                                 
+                        default="encoder/saved_models/encoder_09_06.pt",
                         help="Path to a saved encoder")
     parser.add_argument("-s", "--syn_model_dir", type=Path, 
                         default="synthesizer/saved_models/logs-pretrained/",
@@ -33,10 +33,11 @@ if __name__ == '__main__':
         "If True, audio won't be played.",
         default=True)
     parser.add_argument("-t", "--text", 
+                        # default="Hello my friends. Я многоязычный синтез построенный на tacotron. Шла саша по шоссе и сосала сушку",
                         default="Hello my friends. Я многоязычный синтез построенный на tacotron. Шла саша по шоссе и сосала сушку",
                         help="Text") 
     parser.add_argument("-p", "--path_wav", type=Path, 
-                        default="sample_andrei.m4a",
+                        default="ex.wav",
                         help="wav file")                           
     args = parser.parse_args()
     print_args(args, parser)
@@ -71,6 +72,8 @@ if __name__ == '__main__':
     vocoder.load_model(args.voc_model_fpath)
     
     
+    
+
     ## Run a test
     print("Testing your configuration with small inputs.")
     # Forward an audio waveform of zeroes that lasts 1 second. Notice how we can get the encoder's

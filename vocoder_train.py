@@ -32,13 +32,13 @@ if __name__ == "__main__":
     parser.add_argument("-s", "--save_every", type=int, default=1000, help= \
         "Number of steps between updates of the model on the disk. Set to 0 to never save the "
         "model.")
-    parser.add_argument("-b", "--backup_every", type=int, default=25000, help= \
+    parser.add_argument("-b", "--backup_every", type=int, default=10000, help= \
         "Number of steps between backups of the model. Set to 0 to never make backups of the "
         "model.")
     parser.add_argument("-f", "--force_restart", action="store_true", help= \
         "Do not load any saved model and restart from scratch.")
     args = parser.parse_args()
-
+    
     # Process the arguments
     if not hasattr(args, "syn_dir"):
         args.syn_dir = Path(args.datasets_root, "SV2TTS", "synthesizer")

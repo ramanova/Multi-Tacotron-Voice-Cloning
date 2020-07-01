@@ -31,15 +31,15 @@ if __name__ == "__main__":
 							 "in Tacotron synthesis mode")
     parser.add_argument("--restore", type=bool, default=True,
                         help="Set this to False to do a fresh training")
-    parser.add_argument("--summary_interval", type=int, default=2500,
+    parser.add_argument("--summary_interval", type=int, default=500,     # was 2500,
                         help="Steps between running summary ops")
     parser.add_argument("--embedding_interval", type=int, default=10000,
                         help="Steps between updating embeddings projection visualization")
-    parser.add_argument("--checkpoint_interval", type=int, default=2000, # Was 5000
+    parser.add_argument("--checkpoint_interval", type=int, default=1000, # Was 5000
                         help="Steps between writing checkpoints")
-    parser.add_argument("--eval_interval", type=int, default=100000, # Was 10000
+    parser.add_argument("--eval_interval", type=int, default=10000,          # rus used 100000
                         help="Steps between eval on test data")
-    parser.add_argument("--tacotron_train_steps", type=int, default=2000000, # Was 100000
+    parser.add_argument("--tacotron_train_steps", type=int, default=100000, # rus used 2000000   
                         help="total number of tacotron training steps")
     parser.add_argument("--tf_log_level", type=int, default=1, help="Tensorflow C++ log level.")
     parser.add_argument("--slack_url", default=None,

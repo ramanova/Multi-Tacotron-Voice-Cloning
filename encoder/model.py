@@ -26,7 +26,7 @@ class SpeakerEncoder(nn.Module):
         # Cosine similarity scaling (with fixed initial parameter values)
         self.similarity_weight = nn.Parameter(torch.tensor([10.])).to(loss_device)
         self.similarity_bias = nn.Parameter(torch.tensor([-5.])).to(loss_device)
-
+        
         # Loss
         self.loss_fn = nn.CrossEntropyLoss().to(loss_device)
         
@@ -34,10 +34,20 @@ class SpeakerEncoder(nn.Module):
         # Gradient scale
         self.similarity_weight.grad *= 0.01
         self.similarity_bias.grad *= 0.01
-            
-        # Gradient clipping
-        clip_grad_norm_(self.parameters(), 3, norm_type=2)
+ 
+        parameters_to_clip = [] 
+        parameters_to_clip_cpu = [] 
+        # exclude loss that is on CPU
+        for parameter in self.parameters():            
+            if parameter.device.type == 'cuda':
+                parameters_to_clip.append(parameter)
+            else: # loss clipped separately on cpu
+                parameters_to_clip_cpu.append(parameter)
+
+        clip_grad_norm_(parameters_to_clip, 3, norm_type=2)
+        clip_grad_norm_(parameters_to_clip_cpu, 3, norm_type=2)
     
+
     def forward(self, utterances, hidden_init=None):
         """
         Computes the embeddings of a batch of utterance spectrograms.

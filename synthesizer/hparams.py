@@ -247,12 +247,12 @@ hparams = HParams(
     # major slowdowns! Only use when critical!)
     
     # train/test split ratios, mini-batches sizes
-    tacotron_batch_size=36,  # number of training samples on each training steps (was 32)
+    tacotron_batch_size=32,  # number of training samples on each training steps (was 32)
     # Tacotron Batch synthesis supports ~16x the training batch size (no gradients during 
     # testing). 
     # Training Tacotron with unmasked paddings makes it aware of them, which makes synthesis times
     #  different from training. We thus recommend masking the encoder.
-    tacotron_synthesis_batch_size=128,
+    tacotron_synthesis_batch_size=128, 
     # DO NOT MAKE THIS BIGGER THAN 1 IF YOU DIDN"T TRAIN TACOTRON WITH "mask_encoder=True"!!
     tacotron_test_size=0.05,
     # % of data to keep as test data, if None, tacotron_test_batches must be not None. (5% is 

@@ -5,6 +5,7 @@ from encoder.model import SpeakerEncoder
 from utils.profiler import Profiler
 from pathlib import Path
 import torch
+from torch.autograd import Variable
 
 def sync(device: torch.device):
     # FIXME
@@ -34,6 +35,7 @@ def train(run_id: str, clean_data_root: Path, models_dir: Path, umap_every: int,
     
     # Create the model and the optimizer
     model = SpeakerEncoder(device, loss_device)
+    print(model.parameters)
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate_init)
     init_step = 1
     
@@ -77,12 +79,16 @@ def train(run_id: str, clean_data_root: Path, models_dir: Path, umap_every: int,
         profiler.tick("Forward pass")
         embeds_loss = embeds.view((speakers_per_batch, utterances_per_speaker, -1)).to(loss_device)
         loss, eer = model.loss(embeds_loss)
+        # loss_cuda = Variable(embeds_loss.cuda(), requires_grad=True)
+        # loss, eer = model.loss(loss_cuda)
         sync(loss_device)
         profiler.tick("Loss")
 
         # Backward pass
         model.zero_grad()
         loss.backward()
+        #loss.backward(retain_graph=True)
+        
         profiler.tick("Backward pass")
         model.do_gradient_ops()
         optimizer.step()

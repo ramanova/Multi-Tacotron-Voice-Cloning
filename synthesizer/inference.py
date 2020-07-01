@@ -33,6 +33,8 @@ class Synthesizer:
         # Prepare the model
         self._model = None  # type: Tacotron2
         checkpoint_state = tf.train.get_checkpoint_state(checkpoints_dir)
+        # checkpoint_state = tf.train.get_checkpoint_state('/home/ubuntu/ainovia/vlomme_cloning/Multi-Tacotron-Voice-Cloning/synthesizer/saved_models/logs-28_06_run/taco_pretrained')
+
         if checkpoint_state is None:
             raise Exception("Could not find any synthesizer weights under %s" % checkpoints_dir)
         self.checkpoint_fpath = checkpoint_state.model_checkpoint_path
@@ -40,7 +42,7 @@ class Synthesizer:
             model_name = checkpoints_dir.parent.name.replace("logs-", "")
             step = int(self.checkpoint_fpath[self.checkpoint_fpath.rfind('-') + 1:])
             print("Found synthesizer \"%s\" trained to step %d" % (model_name, step))
-     
+    
     def is_loaded(self):
         """
         Whether the model is loaded in GPU memory.

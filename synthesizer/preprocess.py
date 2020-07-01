@@ -59,7 +59,6 @@ def preprocess_book(datasets_root: Path, out_dir: Path, n_processes: int,
     
     input_dirs = list(dataset_root.glob("*"))
 
-
     print("\n    ".join(map(str, ["Using data from:"] + input_dirs)))
     assert all(input_dir.exists() for input_dir in input_dirs)
     
@@ -78,8 +77,8 @@ def preprocess_book(datasets_root: Path, out_dir: Path, n_processes: int,
     func = partial(preprocess_speaker, out_dir=out_dir, skip_existing=skip_existing, 
                    hparams=hparams)
     job = Pool(n_processes).imap(func, speaker_dirs)
-    #print(job)	
-    for speaker_metadata in tqdm(job, "LibriSpeech", len(speaker_dirs), unit="speakers"):
+    #print(job)
+    for speaker_metadata in tqdm(job, "book", len(speaker_dirs), unit="speakers"):
         #print(speaker_metadata)
         for metadatum in speaker_metadata:
             #print(metadatum)
@@ -98,6 +97,8 @@ def preprocess_book(datasets_root: Path, out_dir: Path, n_processes: int,
     print("Max input length (text chars): %d" % max(len(m[5]) for m in metadata))
     print("Max mel frames length: %d" % max(int(m[4]) for m in metadata))
     print("Max audio timesteps length: %d" % max(int(m[3]) for m in metadata))
+
+    
 def preprocess_sst(datasets_root: Path, out_dir: Path, n_processes: int, 
                            skip_existing: bool, hparams):
 

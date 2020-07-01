@@ -12,6 +12,7 @@ import sys
 from g2p.train import g2p
 import os
 
+# check commit
 if __name__ == '__main__':
     ## Info & args
     parser = argparse.ArgumentParser(

@@ -3,3 +3,7 @@
 */saved_models/
 demo_output_*
 g2p/log/
+andrei*
+.ipynb_checkpoints/
+.vscode/
+visdom.out

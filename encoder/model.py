@@ -85,6 +85,7 @@ class SpeakerEncoder(nn.Module):
         centroids_incl = torch.mean(embeds, dim=1, keepdim=True)
         centroids_incl = centroids_incl.clone() / torch.norm(centroids_incl, dim=2, keepdim=True)
 
+
         # Exclusive centroids (1 per utterance)
         centroids_excl = (torch.sum(embeds, dim=1, keepdim=True) - embeds)
         centroids_excl /= (utterances_per_speaker - 1)

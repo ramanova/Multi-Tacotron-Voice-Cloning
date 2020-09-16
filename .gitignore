@@ -7,3 +7,5 @@ andrei*
 .ipynb_checkpoints/
 .vscode/
 visdom.out
+arabic_g2p/
+ipynb.out

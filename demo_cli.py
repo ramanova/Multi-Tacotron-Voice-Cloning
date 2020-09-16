@@ -11,6 +11,7 @@ import torch
 import sys
 from g2p.train import g2p
 import os
+from datetime import datetime
 
 # check commit
 if __name__ == '__main__':
@@ -19,10 +20,10 @@ if __name__ == '__main__':
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
     parser.add_argument("-e", "--enc_model_fpath", type=Path,                                 
-                        default="encoder/saved_models/encoder_09_06.pt",
+                        default="encoder/saved_models/pretrained.pt",
                         help="Path to a saved encoder")
     parser.add_argument("-s", "--syn_model_dir", type=Path, 
-                        default="synthesizer/saved_models/logs-pretrained/",
+                        default="synthesizer/saved_models/logs_pretrained/",                                 
                         help="Directory containing the synthesizer model")
     parser.add_argument("-v", "--voc_model_fpath", type=Path, 
                         default="vocoder/saved_models/pretrained/pretrained.pt",
@@ -34,18 +35,28 @@ if __name__ == '__main__':
         "If True, audio won't be played.",
         default=True)
     parser.add_argument("-t", "--text", 
-                        # default="Hello my friends. Я многоязычный синтез построенный на tacotron. Шла саша по шоссе и сосала сушку",
-                        default="Hello my friends. Я многоязычный синтез построенный на tacotron. Шла саша по шоссе и сосала сушку",
-                        help="Text") 
+                        # default="Я многоязычный синтез построенный на tacotron. Шла саша по шоссе и сосала сушку",
+                        # default="Если бы мне кто-нибудь предложил, я бы пошел в бар. Карл у Клары украл кораллы а Клара у Карла украла кларнет.",
+                        # default="Вы когда нибудь задумывались о том, чтобы было бы, если бы Земля поменялась местами в Юпитером? Я серьезно!",
+                        # default="The wipers on the bus go Swish, swish, swish. Swish, swish, swish. Swish, swish, swish.",
+                        # default="I think its better to arrive late than not to come at all",
+                        # default="I always arrive late at the office, but I make up for it by leaving early.",
+                        #  default="Hello my friends. It was nice to see you all here at these ceremony. Remember to wash your hands!",
+                        # default="Спасибо большое, мой друг, вы хотите выпить что-нибудь?",
+                        # default="По ясному небу едва-едва неслись высокие и редкие облака, изжелта- белые, как весенний запоздалый снег, 
+                            # плоские и продолговатые, как опустившиеся паруса. Их узорчатые края, пушистые и лёгкие, как хлопчатая бумага, 
+                            # медленно, но видимо изменялись с каждым мгновением: они таяли, эти облака, и от них не падало тени.",
+                        default="Белеет парус одинокий, в высоком небе голубом. Иногда мне весело, иногда грустно.",
+                        help="Text")
     parser.add_argument("-p", "--path_wav", type=Path, 
                         default="ex.wav",
-                        help="wav file")                           
+                        help="wav file")                            
     args = parser.parse_args()
     print_args(args, parser)
     if not args.no_sound:
         import sounddevice as sd
         
-    
+    # Privet, Ya Michal. Kak dela segodnya, Ya uje svobodna i hochu domoi. Vi hotite est chto-nibud?
     ## Print some environment information (for debugging purposes)
     print("Running a test of your configuration...\n")
     if not torch.cuda.is_available():
@@ -187,8 +198,22 @@ if __name__ == '__main__':
         sd.play(generated_pretwav, synthesizer.sample_rate)
         
     # Save it on the disk
-    fpath = "demo_output_%02d.wav" % num_generated
+    output_folder = './demo_' + str(datetime.now().strftime("%d_%m_%Y"))
+    if not os.path.exists(os.path.dirname(output_folder)):
+        try:
+            os.makedirs(os.path.dirname(output_folder))
+        except:
+            raise
+
+    # file_name_hour = f'demo_output_{str(datetime.now().strftime("%H"))}_{num_generated}.wav'
+    # fpath = os.path.join(output_folder, file_name_hour)
+
+    file_name_hour = f'demo_output_{str(datetime.now().strftime("%d_%m"))}_{str(datetime.now().strftime("%H_%M"))}_{num_generated}.wav'
+    # fpath = os.path.join(output_folder, file_name_hour)
+    fpath = file_name_hour
+
     print(generated_wav.dtype)
+
     librosa.output.write_wav(fpath, generated_wav.astype(np.float32), 
                              synthesizer.sample_rate)
     num_generated += 1
